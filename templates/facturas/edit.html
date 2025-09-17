@@ -1,0 +1,101 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Editar Factura {{ factura['numero'] }}{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Editando Factura N°: {{ factura['numero'] }}</h1>
+        <a href="{{ url_for('view_factura', id=factura.id) }}" class="btn btn-info">Finalizar y Ver Factura</a>
+    </div>
+
+    <div class="row">
+        <!-- Columna de Detalles y Estado -->
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Servicios en la Factura</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Cant.</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in detalles %}
+                            <tr>
+                                <td>{{ item['descripcion'] }}</td>
+                                <td>{{ item['cantidad'] }}</td>
+                                <td>${{ "%.2f"|format(item['subtotal']) }}</td>
+                                <td>
+                                    <form action="{{ url_for('delete_item_from_factura', item_id=item.id) }}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm">X</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">Aún no hay servicios en esta factura.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-end">
+                    <h4>Total: ${{ "%.2f"|format(factura['total']) }}</h4>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <form action="{{ url_for('edit_factura', id=factura.id) }}" method="post">
+                        <div class="row align-items-end">
+                            <div class="col-md-8">
+                                <label for="estado" class="form-label">Cambiar Estado de la Factura</label>
+                                <select name="estado" id="estado" class="form-select">
+                                    <option value="Pendiente" {% if factura.estado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                                    <option value="Pagada" {% if factura.estado == 'Pagada' %}selected{% endif %}>Pagada</option>
+                                    <option value="Anulada" {% if factura.estado == 'Anulada' %}selected{% endif %}>Anulada</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-secondary w-100">Actualizar Estado</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna para Agregar Servicios -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Agregar Servicio</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_item_to_factura', id=factura.id) }}" method="post">
+                        <div class="mb-3">
+                            <label for="servicio_id" class="form-label">Servicio</label>
+                            <select name="servicio_id" id="servicio_id" class="form-select" required>
+                                <option value="" disabled selected>-- Seleccione un servicio --</option>
+                                {% for s in servicios %}
+                                <option value="{{ s.id }}">{{ s.descripcion }} (${{ "%.2f"|format(s.precio) }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidad" class="form-label">Cantidad</label>
+                            <input type="number" name="cantidad" id="cantidad" class="form-control" value="1" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Agregar a la Factura</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

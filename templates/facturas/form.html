@@ -1,0 +1,44 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Nueva Factura{% endblock %}
+
+{% block content %}
+    <h1>Nueva Factura - Paso 1</h1>
+    <p>Seleccione el paciente y complete los datos iniciales de la factura.</p>
+
+    <form method="post" action="{{ url_for('new_factura') }}">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="paciente_id" class="form-label">Paciente</label>
+                        <select class="form-select" id="paciente_id" name="paciente_id" required>
+                            <option value="" disabled selected>-- Seleccione un Paciente --</option>
+                            {% for p in pacientes %}
+                                <option value="{{ p['id'] }}">{{ p['apellido'] }}, {{ p['nombre'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="numero" class="form-label">Número de Factura</label>
+                        <input type="text" class="form-control" id="numero" name="numero" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="obra_social_id" class="form-label">Obra Social (Opcional)</label>
+                    <select class="form-select" id="obra_social_id" name="obra_social_id">
+                        <option value="None">Ninguna / Particular</option>
+                        {% for os in obras_sociales %}
+                            <option value="{{ os['id'] }}">{{ os['nombre'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Crear Factura y Agregar Servicios</button>
+                    <a href="{{ url_for('list_facturas') }}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

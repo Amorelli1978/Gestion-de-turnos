@@ -1,0 +1,50 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Lista de Facturas{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Lista de Facturas</h1>
+        <a href="{{ url_for('new_factura') }}" class="btn btn-success">Nueva Factura</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Número</th>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for factura in facturas %}
+                <tr>
+                    <td>{{ factura['numero'] }}</td>
+                    <td>{{ factura['fecha'] }}</td>
+                    <td>{{ factura['paciente_apellido'] }}, {{ factura['paciente_nombre'] }}</td>
+                    <td>${{ "%.2f"|format(factura['total']) }}</td>
+                    <td>
+                        <span class="badge bg-{% if factura['estado'] == 'Pagada' %}success{% elif factura['estado'] == 'Pendiente' %}warning{% else %}secondary{% endif %}">
+                            {{ factura['estado'] }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('view_factura', id=factura['id']) }}" class="btn btn-info btn-sm">Ver</a>
+                        <a href="{{ url_for('edit_factura', id=factura['id']) }}" class="btn btn-primary btn-sm">Editar</a>
+                        <a href="{{ url_for('generate_factura_pdf', id=factura['id']) }}" class="btn btn-secondary btn-sm" target="_blank">PDF</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No se encontraron facturas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

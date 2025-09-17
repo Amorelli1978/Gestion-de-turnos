@@ -1,0 +1,56 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}
+    {% if action == 'new' %}
+        Agregar Obra Social
+    {% else %}
+        Editar Obra Social
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if action == 'new' %}
+            Agregar Nueva Obra Social
+        {% else %}
+            Editar Obra Social
+        {% endif %}
+    </h1>
+
+    <form method="post" action="{% if action == 'new' %}{{ url_for('add_obra_social') }}{% else %}{{ url_for('edit_obra_social', id=obra_social['id']) }}{% endif %}">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ obra_social['nombre'] if obra_social else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="codigo" class="form-label">Código</label>
+            <input type="text" class="form-control" id="codigo" name="codigo" value="{{ obra_social['codigo'] if obra_social else '' }}">
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" id="telefono" name="telefono" value="{{ obra_social['telefono'] if obra_social else '' }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ obra_social['email'] if obra_social else '' }}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="direccion" name="direccion" value="{{ obra_social['direccion'] if obra_social else '' }}">
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                {% if action == 'new' %}
+                    Guardar Obra Social
+                {% else %}
+                    Actualizar Obra Social
+                {% endif %}
+            </button>
+            <a href="{{ url_for('list_obras_sociales') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}

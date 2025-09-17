@@ -1,0 +1,72 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}
+    {% if action == 'new' %}
+        Agregar Paciente
+    {% else %}
+        Editar Paciente
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if action == 'new' %}
+            Agregar Nuevo Paciente
+        {% else %}
+            Editar Paciente #{{ paciente['id'] }}
+        {% endif %}
+    </h1>
+
+    <form method="post" action="{% if action == 'new' %}{{ url_for('add_paciente') }}{% else %}{{ url_for('edit_paciente', id=paciente['id']) }}{% endif %}">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ paciente['nombre'] if paciente else '' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" value="{{ paciente['apellido'] if paciente else '' }}" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="dni" class="form-label">DNI</label>
+                <input type="text" class="form-control" id="dni" name="dni" value="{{ paciente['dni'] if paciente else '' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" id="telefono" name="telefono" value="{{ paciente['telefono'] if paciente else '' }}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ paciente['email'] if paciente else '' }}">
+        </div>
+        <div class="mb-3">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="direccion" name="direccion" value="{{ paciente['direccion'] if paciente else '' }}">
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" value="{{ paciente['fecha_nacimiento'] if paciente else '' }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="numero_afiliado" class="form-label">Número de Afiliado</label>
+                <input type="text" class="form-control" id="numero_afiliado" name="numero_afiliado" value="{{ paciente['numero_afiliado'] if paciente else '' }}">
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                {% if action == 'new' %}
+                    Guardar Paciente
+                {% else %}
+                    Actualizar Paciente
+                {% endif %}
+            </button>
+            <a href="{{ url_for('list_pacientes') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}

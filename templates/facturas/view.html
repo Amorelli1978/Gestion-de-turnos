@@ -1,0 +1,65 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}Detalle de Factura {{ factura['numero'] }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Factura N°: {{ factura['numero'] }}</h1>
+    <div>
+        <a href="{{ url_for('edit_factura', id=factura.id) }}" class="btn btn-primary">Editar</a>
+        <a href="{{ url_for('generate_factura_pdf', id=factura.id) }}" class="btn btn-secondary" target="_blank">Generar PDF</a>
+        <a href="{{ url_for('list_facturas') }}" class="btn btn-outline-secondary">Volver a la Lista</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Detalles de la Factura</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Paciente:</strong> {{ factura['paciente_apellido'] }}, {{ factura['paciente_nombre'] }}</p>
+                <p><strong>Obra Social:</strong> {{ factura['obra_social_nombre'] }}</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p><strong>Fecha:</strong> {{ factura['fecha'] }}</p>
+                <p><strong>Estado:</strong> 
+                    <span class="badge bg-{% if factura['estado'] == 'Pagada' %}success{% elif factura['estado'] == 'Pendiente' %}warning{% else %}secondary{% endif %}">
+                        {{ factura['estado'] }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <h5 class="mt-4">Servicios Prestados</h5>
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                    <th>Descripción</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">Precio Unitario</th>
+                    <th class="text-end">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in detalles %}
+                <tr>
+                    <td>{{ item['descripcion'] }}</td>
+                    <td class="text-center">{{ item['cantidad'] }}</td>
+                    <td class="text-end">${{ "%.2f"|format(item['precio_unitario']) }}</td>
+                    <td class="text-end">${{ "%.2f"|format(item['subtotal']) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-dark">
+                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                    <td class="text-end"><strong>${{ "%.2f"|format(factura['total']) }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}
